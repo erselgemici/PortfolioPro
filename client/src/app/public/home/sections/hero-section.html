@@ -1,0 +1,67 @@
+@let p = profile();
+<section class="hero" aria-labelledby="hero-title">
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <div class="container hero-inner">
+    <div class="intro">
+      @if (p?.isOpenToWork) {
+        <span class="status">
+          <span class="pulse"></span>
+          {{ 'hero.openToWork' | t }}
+        </span>
+      }
+
+      <p class="greeting mono">{{ 'hero.greeting' | t }}</p>
+      <h1 id="hero-title">{{ p?.fullName }}</h1>
+      <p class="role">{{ p?.title | loc }}</p>
+      <p class="headline">{{ p?.headline | loc }}</p>
+
+      <div class="cta">
+        <a routerLink="/" fragment="projects" class="btn btn-primary">
+          {{ 'hero.viewProjects' | t }} <app-icon name="arrow-right" />
+        </a>
+        @if (cvUrl(); as cv) {
+          <a [href]="cv" class="btn" target="_blank" rel="noopener">
+            <app-icon name="download" /> {{ 'hero.downloadCv' | t }}
+          </a>
+        } @else {
+          <a routerLink="/" fragment="contact" class="btn">{{ 'hero.contact' | t }}</a>
+        }
+      </div>
+
+      <div class="meta">
+        @if (p?.location) {
+          <span class="location"><app-icon name="map-pin" /> {{ p?.location }}</span>
+        }
+        <span class="socials">
+          @if (p?.githubUrl; as url) {
+            <a class="icon-btn" [href]="url" target="_blank" rel="noopener" aria-label="GitHub"><app-icon name="github" /></a>
+          }
+          @if (p?.linkedinUrl; as url) {
+            <a class="icon-btn" [href]="url" target="_blank" rel="noopener" aria-label="LinkedIn"><app-icon name="linkedin" /></a>
+          }
+          @if (p?.email; as email) {
+            <a class="icon-btn" [href]="'mailto:' + email" aria-label="E-posta"><app-icon name="mail" /></a>
+          }
+        </span>
+      </div>
+    </div>
+
+    <!-- Kod penceresi: bilgiler API'den geliyor, admin panelinden değişince burası da değişiyor -->
+    <div class="code-window" aria-hidden="true">
+      <div class="window-bar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span class="file mono">developer.ts</span>
+      </div>
+      <pre class="code mono"><span class="c">// {{ p?.headline | loc }}</span>
+<span class="k">const</span> <span class="v">developer</span> = {{ '{' }}
+  <span class="p">name</span>: <span class="s">'{{ p?.fullName }}'</span>,
+  <span class="p">role</span>: <span class="s">'{{ p?.title | loc }}'</span>,
+  <span class="p">location</span>: <span class="s">'{{ p?.location }}'</span>,
+  <span class="p">stack</span>: [@for (tech of stack(); track tech; let last = $last) {<span class="s">'{{ tech }}'</span>@if (!last) {, }}],
+  <span class="p">experience</span>: <span class="n">{{ p?.yearsOfExperience }}</span>,
+  <span class="p">openToWork</span>: <span class="b">{{ p?.isOpenToWork ? 'true' : 'false' }}</span>,
+{{ '}' }};<span class="cursor"></span></pre>
+    </div>
+  </div>
+</section>

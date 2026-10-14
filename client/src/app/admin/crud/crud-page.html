@@ -1,0 +1,76 @@
+<app-page-header [title]="config.title" [description]="config.description">
+  <button type="button" class="btn btn-primary btn-sm" (click)="openCreate()">
+    <app-icon name="plus" /> Yeni {{ config.singular.toLowerCase() }}
+  </button>
+</app-page-header>
+
+<div class="card table-card">
+  @if (loading()) {
+    <div class="state">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="skeleton" style="height: 44px"></div>
+      }
+    </div>
+  } @else if (rows().length === 0) {
+    <div class="state empty">
+      <p>Henüz kayıt yok.</p>
+      <button type="button" class="btn btn-sm" (click)="openCreate()"><app-icon name="plus" /> İlk kaydı ekle</button>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            @for (col of config.columns; track col.label) {
+              <th>{{ col.label }}</th>
+            }
+            <th class="actions-col"><span class="sr-only">İşlemler</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.id) {
+            <tr (dblclick)="openEdit(row)">
+              @for (col of config.columns; track col.label) {
+                <td [class.mono]="col.mono">
+                  @if (col.badge) {
+                    @if (col.badge(row); as b) {
+                      <span class="badge" [class.badge-success]="b.kind === 'success'" [class.badge-accent]="b.kind === 'accent'">{{ b.text }}</span>
+                    } @else {
+                      <span class="muted">—</span>
+                    }
+                  } @else {
+                    {{ col.value(row) }}
+                  }
+                </td>
+              }
+              <td class="actions-col">
+                <button type="button" class="icon-btn" (click)="openEdit(row)" aria-label="Düzenle"><app-icon name="pencil" /></button>
+                <button type="button" class="icon-btn danger" (click)="remove(row)" aria-label="Sil"><app-icon name="trash" /></button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Sağdan açılan form paneli -->
+@if (drawerOpen()) {
+  <div class="drawer-backdrop" (click)="close()" aria-hidden="true"></div>
+  <aside class="drawer" role="dialog" aria-modal="true" [attr.aria-label]="config.singular">
+    <header class="drawer-head">
+      <h2>{{ editing() ? config.singular + ' düzenle' : 'Yeni ' + config.singular.toLowerCase() }}</h2>
+      <button type="button" class="icon-btn" (click)="close()" aria-label="Kapat"><app-icon name="x" /></button>
+    </header>
+    <div class="drawer-body">
+      <app-dynamic-form
+        [fields]="config.fields"
+        [value]="formValue()"
+        [saving]="saving()"
+        [serverErrors]="serverErrors()"
+        (save)="save($event)"
+        (cancel)="close()" />
+    </div>
+  </aside>
+}

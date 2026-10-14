@@ -1,0 +1,113 @@
+<form class="grid" [formGroup]="form()" (ngSubmit)="submit()" novalidate>
+  @for (field of fields(); track field.key) {
+    <div class="field" [class.full]="field.full || field.localized || field.type === 'checkbox'"
+      [class.checkbox-field]="field.type === 'checkbox'">
+
+      @if (field.type !== 'checkbox') {
+        <span class="label">
+          {{ field.label }}
+          @if (field.required) {
+            <span class="req">*</span>
+          }
+        </span>
+      }
+
+      @if (field.localized) {
+        <!-- İki dilli alan: TR ve EN -->
+        <div class="localized" [formGroupName]="field.key" [class.stacked]="field.type !== 'text'">
+          @for (lang of ['tr', 'en']; track lang) {
+            <div class="lang-field">
+              <span class="lang mono">{{ lang.toUpperCase() }}</span>
+              @if (field.type === 'text') {
+                <input class="input" [formControlName]="lang" [attr.aria-label]="field.label + ' ' + lang" />
+              } @else {
+                <textarea class="textarea" [class.markdown]="field.type === 'markdown'" [formControlName]="lang"
+                  [rows]="field.type === 'markdown' ? 12 : 4" [attr.aria-label]="field.label + ' ' + lang"></textarea>
+              }
+              @if (invalid(field.key, $any(lang))) {
+                <span class="error">{{ errorText(field, $any(lang)) }}</span>
+              }
+            </div>
+          }
+        </div>
+      } @else {
+        @switch (field.type) {
+          @case ('textarea') {
+            <textarea class="textarea" [formControlName]="field.key" rows="4"></textarea>
+          }
+          @case ('select') {
+            <select class="select" [formControlName]="field.key">
+              @for (opt of field.options ?? []; track opt.value) {
+                <option [value]="opt.value">{{ opt.label }}</option>
+              }
+            </select>
+          }
+          @case ('checkbox') {
+            <label class="checkbox">
+              <input type="checkbox" [formControlName]="field.key" />
+              {{ field.label }}
+            </label>
+          }
+          @case ('number') {
+            <input class="input" type="number" [formControlName]="field.key" />
+          }
+          @case ('month') {
+            <input class="input" type="month" [formControlName]="field.key" />
+          }
+          @case ('date') {
+            <input class="input" type="date" [formControlName]="field.key" />
+          }
+          @case ('upload') {
+            <div class="upload">
+              @if (uploadValue(field.key); as url) {
+                @if (isImage(url)) {
+                  <img class="preview" [src]="url" alt="" />
+                } @else {
+                  <a class="file-link mono" [href]="url" target="_blank" rel="noopener">{{ url }}</a>
+                }
+              }
+              <div class="upload-row">
+                <input class="input" [formControlName]="field.key" placeholder="https://... ya da dosya yükle" />
+                <label class="btn btn-sm upload-btn" [class.disabled]="uploading() === field.key">
+                  <app-icon name="upload" />
+                  {{ uploading() === field.key ? 'Yükleniyor...' : 'Yükle' }}
+                  <input type="file" class="sr-only" [accept]="field.uploadKind === 'Document' ? '.pdf' : '.jpg,.jpeg,.png,.webp'"
+                    (change)="onFileSelected(field, $event)" [disabled]="uploading() === field.key" />
+                </label>
+                @if (uploadValue(field.key)) {
+                  <button type="button" class="icon-btn" (click)="clearUpload(field.key)" aria-label="Kaldır">
+                    <app-icon name="x" />
+                  </button>
+                }
+              </div>
+            </div>
+          }
+          @default {
+            <input class="input" [type]="field.type === 'email' ? 'email' : field.type === 'url' ? 'url' : 'text'"
+              [formControlName]="field.key" [placeholder]="field.type === 'url' ? 'https://' : ''" />
+          }
+        }
+
+        @if (invalid(field.key)) {
+          <span class="error">{{ errorText(field) }}</span>
+        }
+      }
+
+      @if (serverErrorFor(field.key); as serverError) {
+        <span class="error">{{ serverError }}</span>
+      }
+      @if (field.hint) {
+        <span class="hint">{{ field.hint }}</span>
+      }
+    </div>
+  }
+
+  <div class="form-actions full">
+    @if (showCancel()) {
+      <button type="button" class="btn" (click)="cancel.emit()">Vazgeç</button>
+    }
+    <button type="submit" class="btn btn-primary" [disabled]="saving()">
+      {{ saving() ? 'Kaydediliyor...' : submitLabel() }}
+    </button>
+  </div>
+</form>

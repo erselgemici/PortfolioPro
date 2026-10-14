@@ -1,0 +1,10 @@
+<Project>
+  <!-- NOT: Bu dosyadaki ayarlar tüm projelere otomatik uygulanır, her csproj'da tekrar yazmıyoruz -->
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+</Project>

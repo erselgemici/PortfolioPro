@@ -1,0 +1,48 @@
+# Tüm sistemi tek komutla ayağa kaldırır:  docker compose up -d --build
+# Önce .env.example dosyasını .env olarak kopyalayıp içini doldur.
+
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env dosyasında tanımlı olmalı}
+    volumes:
+      - sqldata:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    # NOT: Veritabanı portu dışarı açık değil, sadece api container'ı erişebiliyor
+
+  api:
+    build: ./server
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__Default: "Server=db;Database=PortfolioProDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;"
+      Jwt__Key: ${JWT_KEY:?JWT_KEY .env dosyasında tanımlı olmalı}
+      Seed__AdminEmail: ${ADMIN_EMAIL}
+      Seed__AdminPassword: ${ADMIN_PASSWORD}
+      Seed__AdminFullName: ${ADMIN_FULL_NAME:-Admin}
+    volumes:
+      - uploads:/app/wwwroot/uploads
+    # API portu da dışarı açık değil, istekler nginx (web) üzerinden geliyor
+
+  web:
+    build: ./client
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-8080}:80"
+
+volumes:
+  sqldata:
+  uploads:

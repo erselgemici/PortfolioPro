@@ -1,0 +1,43 @@
+namespace PortfolioPro.Application.Common;
+
+// Result pattern: handler ya başarılı sonuç ya da Error döner.
+public class Result
+{
+    protected Result(bool isSuccess, Error? error)
+    {
+        IsSuccess = isSuccess;
+        Error = error;
+    }
+
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+    public Error? Error { get; }
+
+    public static Result Success() => new(true, null);
+    public static Result Failure(Error error) => new(false, error);
+
+    public static Result<T> Success<T>(T value) => new(value, true, null);
+    public static Result<T> Failure<T>(Error error) => new(default, false, error);
+
+    // NOT: implicit operator sayesinde handler'da "return Result.Failure(...)" yerine
+    // direkt "return ProjectErrors.NotFound;" yazabiliyoruz
+    public static implicit operator Result(Error error) => Failure(error);
+}
+
+public class Result<T> : Result
+{
+    private readonly T? _value;
+
+    internal Result(T? value, bool isSuccess, Error? error) : base(isSuccess, error)
+    {
+        _value = value;
+    }
+
+    // Başarısız sonucun Value'suna erişmek bir programlama hatasıdır, bu yüzden exception
+    public T Value => IsSuccess
+        ? _value!
+        : throw new InvalidOperationException("Başarısız bir sonucun değerine erişilemez.");
+
+    public static implicit operator Result<T>(T value) => Success(value);
+    public static implicit operator Result<T>(Error error) => Failure<T>(error);
+}

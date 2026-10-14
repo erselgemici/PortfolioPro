@@ -1,0 +1,60 @@
+<div class="shell" [class.open]="sidebarOpen()">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="logo mono">EG</span>
+      <div>
+        <strong>Portfolio</strong>
+        <span class="muted small">Yönetim paneli</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      @for (item of nav; track item.path) {
+        <a [routerLink]="item.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: !!item.exact }"
+          class="nav-item">
+          <app-icon [name]="item.icon" />
+          <span>{{ item.label }}</span>
+          @if (item.badge && state.unreadMessages() > 0) {
+            <span class="count">{{ state.unreadMessages() }}</span>
+          }
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar-foot">
+      <a routerLink="/" class="nav-item" target="_blank">
+        <app-icon name="external" />
+        <span>Siteyi görüntüle</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="backdrop" (click)="sidebarOpen.set(false)" aria-hidden="true"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button type="button" class="icon-btn menu" (click)="sidebarOpen.set(true)" aria-label="Menüyü aç">
+        <app-icon name="menu" />
+      </button>
+
+      <span class="spacer"></span>
+
+      <button type="button" class="icon-btn" (click)="theme.toggle()" aria-label="Temayı değiştir">
+        <app-icon [name]="theme.resolved() === 'dark' ? 'sun' : 'moon'" />
+      </button>
+
+      <div class="user">
+        <span class="avatar">{{ (auth.user()?.fullName ?? 'A').charAt(0) }}</span>
+        <span class="user-name">{{ auth.user()?.fullName }}</span>
+      </div>
+
+      <button type="button" class="btn btn-sm btn-ghost" (click)="auth.logout()">
+        <app-icon name="logout" /> Çıkış
+      </button>
+    </header>
+
+    <main class="content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

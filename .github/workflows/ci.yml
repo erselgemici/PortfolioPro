@@ -1,0 +1,54 @@
+# Her push ve pull request'te backend ve frontend'in derlendiğini ve testlerin geçtiğini kontrol eder.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    name: Backend (.NET 9)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+      - name: Restore
+        run: dotnet restore PortfolioPro.slnx
+      - name: Build
+        run: dotnet build PortfolioPro.slnx --no-restore -c Release
+      - name: Test
+        run: dotnet test PortfolioPro.slnx --no-build -c Release --verbosity normal
+
+  frontend:
+    name: Frontend (Angular 20)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  docker:
+    name: Docker imajları
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: API imajı
+        run: docker build -t portfoliopro-api ./server
+      - name: Web imajı
+        run: docker build -t portfoliopro-web ./client

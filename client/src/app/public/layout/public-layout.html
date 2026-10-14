@@ -1,0 +1,57 @@
+<a class="skip-link" href="#main">İçeriğe geç</a>
+
+<header class="header" [class.scrolled]="scrolled() || menuOpen()">
+  <div class="container header-inner">
+    <a routerLink="/" class="brand" aria-label="Ana sayfa">
+      <span class="logo mono">EG</span>
+      <span class="brand-name">{{ portfolio()?.profile?.fullName || 'Ersel Gemici' }}</span>
+    </a>
+
+    <nav class="nav" [class.open]="menuOpen()" aria-label="Ana menü">
+      @for (link of links; track link.fragment) {
+        <a routerLink="/" [fragment]="link.fragment" class="nav-link">{{ link.key | t }}</a>
+      }
+    </nav>
+
+    <div class="actions">
+      <button type="button" class="icon-btn lang" (click)="i18n.toggle()" [attr.aria-label]="'common.toggleLang' | t">
+        <span class="mono">{{ i18n.lang() === 'tr' ? 'EN' : 'TR' }}</span>
+      </button>
+      <button type="button" class="icon-btn" (click)="theme.toggle()" [attr.aria-label]="'common.toggleTheme' | t">
+        <app-icon [name]="theme.resolved() === 'dark' ? 'sun' : 'moon'" />
+      </button>
+      <button type="button" class="icon-btn menu-btn" (click)="toggleMenu()" [attr.aria-expanded]="menuOpen()"
+        [attr.aria-label]="'nav.menu' | t">
+        <app-icon [name]="menuOpen() ? 'x' : 'menu'" />
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <router-outlet />
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <p class="footer-name">© {{ year }} {{ portfolio()?.profile?.fullName || 'Ersel Gemici' }}</p>
+      <p class="footer-built mono">{{ 'footer.built' | t }}</p>
+    </div>
+
+    <div class="footer-links">
+      @if (portfolio()?.profile?.githubUrl; as url) {
+        <a class="icon-btn" [href]="url" target="_blank" rel="noopener" aria-label="GitHub"><app-icon name="github" /></a>
+      }
+      @if (portfolio()?.profile?.linkedinUrl; as url) {
+        <a class="icon-btn" [href]="url" target="_blank" rel="noopener" aria-label="LinkedIn"><app-icon name="linkedin" /></a>
+      }
+      @if (portfolio()?.profile?.email; as email) {
+        <a class="icon-btn" [href]="'mailto:' + email" aria-label="E-posta"><app-icon name="mail" /></a>
+      }
+      <button type="button" class="icon-btn" (click)="scrollTop()" [attr.aria-label]="'footer.backToTop' | t">
+        <app-icon name="arrow-up" />
+      </button>
+    </div>
+  </div>
+</footer>

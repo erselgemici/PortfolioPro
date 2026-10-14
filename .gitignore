@@ -1,0 +1,26 @@
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+
+# Yüklenen dosyalar (kullanıcı içeriği, repoya girmez)
+server/src/PortfolioPro.API/wwwroot/uploads/*
+!server/src/PortfolioPro.API/wwwroot/uploads/.gitkeep
+
+# Angular / Node
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# Ortam değişkenleri ve gizli bilgiler
+.env
+*.pfx
+
+# IDE / işletim sistemi
+.idea/
+.DS_Store
+Thumbs.db

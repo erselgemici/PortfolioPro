@@ -1,0 +1,92 @@
+<section id="contact" class="section">
+  <div class="container contact" appReveal>
+    <div class="info">
+      <div class="section-head">
+        <span class="kicker">{{ 'contact.kicker' | t }}</span>
+        <h2>{{ 'contact.title' | t }}</h2>
+        <p>{{ 'contact.text' | t }}</p>
+      </div>
+
+      @if (profile()?.email; as email) {
+        <a class="info-row" [href]="'mailto:' + email">
+          <span class="info-icon"><app-icon name="mail" /></span>
+          <span>{{ email }}</span>
+        </a>
+      }
+      @if (profile()?.linkedinUrl; as url) {
+        <a class="info-row" [href]="url" target="_blank" rel="noopener">
+          <span class="info-icon"><app-icon name="linkedin" /></span>
+          <span>LinkedIn</span>
+        </a>
+      }
+      @if (profile()?.location; as location) {
+        <div class="info-row">
+          <span class="info-icon"><app-icon name="map-pin" /></span>
+          <span>{{ location }}</span>
+        </div>
+      }
+    </div>
+
+    <form class="card form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      @if (state() === 'success') {
+        <div class="alert alert-success" role="status">
+          <app-icon name="check" /> {{ 'contact.success' | t }}
+        </div>
+      }
+      @if (state() === 'error' || state() === 'rateLimited') {
+        <div class="alert alert-error" role="alert">
+          <app-icon name="alert" /> {{ (state() === 'rateLimited' ? 'contact.rateLimited' : 'contact.error') | t }}
+        </div>
+      }
+
+      <div class="row">
+        <div class="field">
+          <label for="c-name">{{ 'contact.name' | t }}</label>
+          <input id="c-name" class="input" formControlName="name" autocomplete="name" />
+          @if (hasError('name')) {
+            <span class="error">{{ 'contact.required' | t }}</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="c-email">{{ 'contact.email' | t }}</label>
+          <input id="c-email" class="input" type="email" formControlName="email" autocomplete="email" />
+          @if (hasError('email')) {
+            <span class="error">
+              {{ (form.controls.email.hasError('required') ? 'contact.required' : 'contact.invalidEmail') | t }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="c-subject">{{ 'contact.subjectOptional' | t }}</label>
+        <input id="c-subject" class="input" formControlName="subject" />
+      </div>
+
+      <div class="field">
+        <label for="c-message">{{ 'contact.message' | t }}</label>
+        <textarea id="c-message" class="textarea" rows="5" formControlName="message"></textarea>
+        @if (hasError('message')) {
+          <span class="error">
+            {{ (form.controls.message.hasError('required') ? 'contact.required' : 'contact.minMessage') | t }}
+          </span>
+        }
+      </div>
+
+      <!-- Honeypot: ekranda görünmüyor, ekran okuyucular da atlıyor -->
+      <div class="hp" aria-hidden="true">
+        <label for="c-website">Website</label>
+        <input id="c-website" formControlName="website" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <button type="submit" class="btn btn-primary submit" [disabled]="state() === 'sending'">
+        @if (state() === 'sending') {
+          {{ 'contact.sending' | t }}
+        } @else {
+          <app-icon name="send" /> {{ 'contact.send' | t }}
+        }
+      </button>
+    </form>
+  </div>
+</section>
