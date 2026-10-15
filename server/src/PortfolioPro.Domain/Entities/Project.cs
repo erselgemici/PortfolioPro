@@ -17,7 +17,7 @@ public class Project : BaseEntity
     public string? StoreUrl { get; set; }
 
     // NOT: EF Core 8+ primitive collection desteği. List<string> ayrı tablo açmadan
-    // SQL Server'da JSON olarak tek kolonda saklanıyor: ["C#", "Angular"]
+    // PostgreSQL'de dizi (text[]) olarak tek kolonda saklanıyor: ["C#", "Angular"]
     public List<string> Technologies { get; set; } = [];
 
     // Projenin yapıldığı tarih (ay/yıl). Siteda projeler buna göre sıralanıyor: en yeni en üstte.

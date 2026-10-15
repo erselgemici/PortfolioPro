@@ -40,7 +40,8 @@ public static class DependencyInjection
 
         services.AddDbContext<AppDbContext>((sp, options) =>
         {
-            options.UseSqlServer(connectionString, sql =>
+            // NOT: Veritabanı PostgreSQL. SQL Server ARM işlemcili sunucularda çalışmadığı ve daha fazla RAM istediği için değiştirdim.
+            options.UseNpgsql(connectionString, sql =>
             {
                 // NOT: Bulutta veritabanı bağlantısı anlık kopabiliyor. Bu ayar geçici hatalarda
                 // sorguyu otomatik olarak birkaç kez tekrar deniyor.

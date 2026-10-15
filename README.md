@@ -1,7 +1,7 @@
 # PortfolioPro
 
 Kişisel portfolyo sitem. Ziyaretçi tarafı ve içeriği yönettiğim bir admin paneli var.
-Backend **.NET 9 Web API** (Clean Architecture), frontend **Angular 20**, veritabanı **SQL Server**. Docker ile tek komutla ayağa kalkıyor.
+Backend **.NET 9 Web API** (Clean Architecture), frontend **Angular 20**, veritabanı **PostgreSQL**. Docker ile tek komutla ayağa kalkıyor.
 
 > 🇹🇷 / 🇬🇧 Site Türkçe ve İngilizce, açık ve koyu tema destekliyor.
 
@@ -30,7 +30,7 @@ Backend **.NET 9 Web API** (Clean Architecture), frontend **Angular 20**, verita
 | Katman | Kullanılanlar |
 |---|---|
 | Backend | .NET 9, ASP.NET Core Minimal API, MediatR (CQRS), FluentValidation |
-| Veri | Entity Framework Core 9, SQL Server, `Select` projeksiyonları, complex type, primitive collection |
+| Veri | Entity Framework Core 9, PostgreSQL (Npgsql), `Select` projeksiyonları, complex type, primitive collection |
 | Kimlik | ASP.NET Core Identity, JWT (access token) + refresh token (httpOnly cookie) |
 | Frontend | Angular 20: standalone component, signals, yeni control flow (`@if`, `@for`), functional interceptor/guard, lazy loading |
 | Altyapı | Docker, Docker Compose, nginx, GitHub Actions |
@@ -56,7 +56,7 @@ client/                              → Angular 20
 ```
 
 Bağımlılıklar dıştan içe doğru: `API → Infrastructure → Application → Domain`.
-Bir istek şu yolu izliyor: **Endpoint → MediatR → ValidationBehavior → Handler → IAppDbContext → SQL Server**.
+Bir istek şu yolu izliyor: **Endpoint → MediatR → ValidationBehavior → Handler → IAppDbContext → PostgreSQL**.
 Handler'lar HTTP'den habersiz, `Result` dönüyor; API katmanı bunu `200 / 404 / 409` gibi cevaplara çeviriyor.
 
 ## Güvenlik
@@ -84,7 +84,7 @@ Handler'lar HTTP'den habersiz, `Result` dönüyor; API katmanı bunu `200 / 404 
 ## Kurulum (geliştirme ortamı)
 
 ### Gereksinimler
-- .NET 9 SDK, Node.js 22, SQL Server LocalDB (Visual Studio ile geliyor)
+- .NET 9 SDK, Node.js 22, PostgreSQL 17
 - EF Core aracı: `dotnet tool install --global dotnet-ef`
 
 ### 1. Gizli ayarlar (user-secrets)
@@ -97,7 +97,7 @@ dotnet user-secrets set "Seed:AdminPassword" "GucluSifre12345"
 dotnet user-secrets set "Seed:AdminFullName" "Ersel Gemici"
 ```
 
-Bağlantı cümlesi `appsettings.Development.json` içinde (LocalDB, `PortfolioProDb`).
+Bağlantı cümlesi `appsettings.Development.json` içinde (`localhost:5432`, veritabanı `portfoliopro`). Şifreyi user-secrets ile ver: `dotnet user-secrets set "ConnectionStrings:Default" "Host=localhost;Port=5432;Database=portfoliopro;Username=postgres;Password=..."`
 
 ### 2. İlk migration
 
@@ -137,11 +137,11 @@ cp .env.example .env      # içindeki değerleri değiştir
 docker compose up -d --build
 ```
 
-Site `https://localhost` adresinde açılır (Caddy yerel bir sertifika üretir, tarayıcı ilk seferde uyarı verebilir). SQL Server ve API portları dışarı açık değil, istekler Caddy → nginx üzerinden geçiyor.
+Site `https://localhost` adresinde açılır (Caddy yerel bir sertifika üretir, tarayıcı ilk seferde uyarı verebilir). Veritabanı ve API portları dışarı açık değil, istekler Caddy → nginx üzerinden geçiyor.
 
 ## Yayına alma
 
-Docker kurulu bir VPS (en az 4 GB RAM, x86) + alan adı yeterli.
+Docker kurulu bir VPS (2 GB RAM yeterli, x86 ya da ARM) + alan adı yeterli.
 
 1. Alan adının DNS ayarında `A` kaydıyla domaini sunucunun IP'sine yönlendir (`@` ve `www`).
 2. Sunucuya repoyu çek, `.env` dosyasını oluştur ve `DOMAIN=alanadin.com` yaz.

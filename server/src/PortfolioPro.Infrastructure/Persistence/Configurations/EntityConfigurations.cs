@@ -36,7 +36,7 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
 
         b.Localized(x => x.Title, 150);
         b.Localized(x => x.Summary, 400);
-        b.Localized(x => x.Content); // markdown, uzunluk sınırı yok -> nvarchar(max)
+        b.Localized(x => x.Content); // markdown, uzunluk sınırı yok -> text
 
         // Enum'ı sayı yerine yazı olarak saklıyoruz, veritabanına bakınca "Web" görmek "1"den daha anlaşılır
         b.Property(x => x.Category).HasConversion<string>().HasMaxLength(20);

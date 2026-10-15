@@ -262,14 +262,14 @@ internal static class SeedData
             T("Şu an gezdiğin site. Clean Architecture, JWT + refresh token, rate limiting ve Docker ile hazırlandı.",
               "The site you're browsing. Built with Clean Architecture, JWT + refresh tokens, rate limiting and Docker."),
             T("## Mimari\n\n- .NET 9 Web API, Clean Architecture (Domain, Application, Infrastructure, API)\n- CQRS + MediatR, FluentValidation\n" +
-              "- EF Core + SQL Server, `Select` projeksiyonları\n- Angular 20: standalone component, signals\n\n" +
+              "- EF Core + PostgreSQL, `Select` projeksiyonları\n- Angular 20: standalone component, signals\n\n" +
               "## Güvenlik\n\n- Kısa ömürlü access token + httpOnly cookie'de refresh token (rotation ve reuse detection)\n" +
               "- Login ve iletişim formunda rate limiting\n- Dosya yüklemede içerik (magic number) kontrolü",
               "## Architecture\n\n- .NET 9 Web API, Clean Architecture (Domain, Application, Infrastructure, API)\n- CQRS + MediatR, FluentValidation\n" +
-              "- EF Core + SQL Server with `Select` projections\n- Angular 20: standalone components, signals\n\n" +
+              "- EF Core + PostgreSQL with `Select` projections\n- Angular 20: standalone components, signals\n\n" +
               "## Security\n\n- Short-lived access token + refresh token in an httpOnly cookie (rotation and reuse detection)\n" +
               "- Rate limiting on login and the contact form\n- File upload content (magic number) validation"),
-            [".NET 9", "Angular 20", "SQL Server", "Docker", "JWT"], github: Repo("PortfolioPro")),
+            [".NET 9", "Angular 20", "PostgreSQL", "Docker", "JWT"], github: Repo("PortfolioPro")),
 
         P("devlog", new DateOnly(2026, 10, 1), ProjectCategory.Web, 2, featured: true,
             T("DevLog: Çok Yazarlı Blog Platformu", "DevLog: Multi-Author Blog Platform"),

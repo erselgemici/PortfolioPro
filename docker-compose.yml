@@ -3,22 +3,19 @@
 
 services:
   db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      ACCEPT_EULA: "Y"
-      # NOT: Varsayılan sürüm Developer, canlıda kullanmak lisansa aykırı. Express ücretsiz ve küçük bir site için yeterli.
-      MSSQL_PID: Express
-      MSSQL_MEMORY_LIMIT_MB: 1536
-      MSSQL_SA_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env dosyasında tanımlı olmalı}
+      POSTGRES_DB: portfoliopro
+      POSTGRES_USER: portfoliopro
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env dosyasında tanımlı olmalı}
     volumes:
-      - sqldata:/var/opt/mssql
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$${MSSQL_SA_PASSWORD}\" -C -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "pg_isready -U portfoliopro -d portfoliopro"]
       interval: 10s
       timeout: 5s
-      retries: 12
-      start_period: 20s
+      retries: 10
     # NOT: Veritabanı portu dışarı açık değil, sadece api container'ı erişebiliyor
 
   api:
@@ -29,7 +26,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__Default: "Server=db;Database=PortfolioProDb;User Id=sa;Password=${DB_PASSWORD};TrustServerCertificate=True;"
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=portfoliopro;Username=portfoliopro;Password=${DB_PASSWORD}"
       Jwt__Key: ${JWT_KEY:?JWT_KEY .env dosyasında tanımlı olmalı}
       Seed__AdminEmail: ${ADMIN_EMAIL}
       Seed__AdminPassword: ${ADMIN_PASSWORD}
@@ -63,7 +60,7 @@ services:
       - caddy_config:/config
 
 volumes:
-  sqldata:
+  pgdata:
   uploads:
   caddy_data:
   caddy_config:
