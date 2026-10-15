@@ -38,18 +38,16 @@ internal static class SeedData
             "C# / .NET Core ile backend, Angular ve React ile arayüz geliştiriyorum. Sade, sürdürülebilir ve katmanlı mimariyle çözümler üretiyorum.",
             "I build backends with C# / .NET Core and interfaces with Angular and React, focusing on clean, maintainable, layered solutions."),
         About = T(
-            "3 yılı aşkın süredir Full Stack Developer olarak çalışıyorum. Kurumsal ölçekli sistemlerde C# / .NET Core ile backend geliştiriyor, " +
-            "PostgreSQL, MongoDB ve SQL üzerinde veri mimarileri kuruyor, React ve Angular ile de arayüz tarafında yer alıyorum.\n\n" +
-            "Matematik kökenli bir eğitim geçmişinden gelmem analitik düşünme yönümü güçlendirdi. Bunu yazılımda Clean Code, SOLID ve " +
-            "katmanlı mimari (N-Tier, Onion, CQRS) gibi prensiplerle birleştirerek sürdürülebilir çözümler üretmeye çalışıyorum.\n\n" +
-            "Uluslararası operasyon ekipleriyle birlikte çalışıp canlı ortam sorunlarını hızlıca çözüme kavuşturma konusunda epey pratik kazandım. " +
-            "Boş zamanlarımda Gemici Studio adı altında kendi uygulamalarımı geliştirip yayına alıyorum.",
-            "I have been working as a Full Stack Developer for more than 3 years. I build backends for enterprise-scale systems with C# / .NET Core, " +
-            "design data architectures on PostgreSQL, MongoDB and SQL, and work on the frontend with React and Angular.\n\n" +
-            "My background in mathematics sharpened my analytical thinking. I combine it with principles such as Clean Code, SOLID and " +
-            "layered architecture (N-Tier, Onion, CQRS) to build maintainable solutions.\n\n" +
-            "Working with international operations teams, I gained solid experience in resolving production issues quickly. " +
-            "In my spare time I build and ship my own apps under the Gemici Studio name."),
+            "Matematik mezunuyum. Yaklaşık 3 yıllık kurumsal deneyimimi Softtech ve PiA'da edindim. Backend tarafında C# / .NET, " +
+            "arayüz tarafında Angular ve React ile çalışıyorum; MSSQL, PostgreSQL ve MongoDB kullandım.\n\n" +
+            "PiA'da uluslararası operasyon ekibinden gelen canlı ortam hatalarını analiz edip çözdüm. 2025'ten bu yana M&Y Yazılım Akademi'de " +
+            "aldığım .NET Core eğitimiyle Clean Architecture, CQRS ve yapay zekâ entegrasyonlu projeler geliştiriyorum.\n\n" +
+            "Gemici Studio adıyla kendi uygulamalarımı da yayınlıyorum; 101 Çetele Google Play'de.",
+            "I studied mathematics and gained about 3 years of enterprise experience at Softtech and PiA. I work with C# / .NET on the backend " +
+            "and Angular and React on the frontend, and I have used MSSQL, PostgreSQL and MongoDB.\n\n" +
+            "At PiA I analyzed and fixed production issues reported by the international operations team. Since 2025 I have been building " +
+            "projects with Clean Architecture, CQRS and AI integrations through the .NET Core program at M&Y Yazılım Akademi.\n\n" +
+            "I also publish my own apps under the Gemici Studio name; 101 Çetele is live on Google Play."),
         Location = "Ümraniye, İstanbul",
         Email = "erselgemici.eg@gmail.com",
         GithubUrl = Github,
@@ -112,9 +110,22 @@ internal static class SeedData
                 "I build my own mobile and web apps end to end, from the idea stage to store release. " +
                 "My Okey 101 score-tracking app, 101 Çetele, is live on Google Play."),
             Location = "İstanbul",
-            StartDate = new DateOnly(2025, 1, 1),
+            StartDate = new DateOnly(2025, 5, 1),
             Technologies = ["React Native", "Expo", "Firebase", ".NET", "Angular"],
             DisplayOrder = 1
+        },
+        new Experience
+        {
+            Company = "Kurulum Cognitive Services",
+            Position = T("Software Engineer", "Software Engineer"),
+            Description = T(
+                "İki aylık bu süreçte .NET tabanlı uygulamaların bakımını yaptım.",
+                "During this two-month role I maintained .NET based applications."),
+            Location = "İstanbul",
+            StartDate = new DateOnly(2026, 2, 1),
+            EndDate = new DateOnly(2026, 4, 1),
+            Technologies = [".NET"],
+            DisplayOrder = 2
         },
         new Experience
         {
@@ -130,10 +141,10 @@ internal static class SeedData
                 "• Analyzed user requests and technical issues and delivered end-to-end solutions; maintained systems built with .NET and React.\n" +
                 "• Increased application stability by improving existing applications and keeping them maintainable."),
             Location = "İstanbul",
-            StartDate = new DateOnly(2023, 1, 1),
-            EndDate = new DateOnly(2026, 1, 1),
+            StartDate = new DateOnly(2023, 9, 1),
+            EndDate = new DateOnly(2025, 4, 1),
             Technologies = [".NET", "React", "SQL", "MongoDB", "Datadog", "Camunda", "Keycloak"],
-            DisplayOrder = 2
+            DisplayOrder = 3
         },
         new Experience
         {
@@ -145,10 +156,10 @@ internal static class SeedData
                 "• Worked on developing and maintaining backend services with Cobol and Java in an enterprise architecture.\n" +
                 "• Owned frontend design and integration end to end with ASP.NET MVC."),
             Location = "İstanbul",
-            StartDate = new DateOnly(2022, 1, 1),
-            EndDate = new DateOnly(2023, 1, 1),
+            StartDate = new DateOnly(2022, 8, 1),
+            EndDate = new DateOnly(2023, 9, 1),
             Technologies = ["Cobol", "Java", "ASP.NET MVC"],
-            DisplayOrder = 3
+            DisplayOrder = 4
         }
     ];
 
@@ -199,11 +210,45 @@ internal static class SeedData
         },
         new Certificate
         {
-            // NOT: Tarihi CV'de yok, admin panelinden doğru yıl girilmeli
-            Title = "Microsoft Yazılım Uzmanlığı Eğitimi",
-            Issuer = "BT Academy",
-            IssuedAt = new DateOnly(2022, 1, 1),
+            Title = "Modern C# Kursu: .NET",
+            Issuer = "Udemy",
+            IssuedAt = new DateOnly(2022, 6, 1),
             DisplayOrder = 2
+        },
+        new Certificate
+        {
+            Title = "ComSoc Akademi C# Eğitimi",
+            Issuer = "IEEE Doğuş Üniversitesi Öğrenci Kolu",
+            IssuedAt = new DateOnly(2022, 5, 1),
+            DisplayOrder = 3
+        },
+        new Certificate
+        {
+            Title = "ComSoc Akademi Java Eğitimi",
+            Issuer = "IEEE Doğuş Üniversitesi Öğrenci Kolu",
+            IssuedAt = new DateOnly(2022, 5, 1),
+            DisplayOrder = 4
+        },
+        new Certificate
+        {
+            Title = "Java ile Programlamaya Giriş",
+            Issuer = "BTK Akademi",
+            IssuedAt = new DateOnly(2022, 5, 1),
+            DisplayOrder = 5
+        },
+        new Certificate
+        {
+            Title = "Kodla, Kariyerine Başla: Hazırlık",
+            Issuer = "Kodluyoruz",
+            IssuedAt = new DateOnly(2022, 2, 1),
+            DisplayOrder = 6
+        },
+        new Certificate
+        {
+            Title = "Microsoft Yazılım Uzmanlığı (MCSD)",
+            Issuer = "BT Akademi",
+            IssuedAt = new DateOnly(2020, 6, 1),
+            DisplayOrder = 7
         }
     ];
 

@@ -7,6 +7,9 @@ services:
     restart: unless-stopped
     environment:
       ACCEPT_EULA: "Y"
+      # NOT: Varsayılan sürüm Developer, canlıda kullanmak lisansa aykırı. Express ücretsiz ve küçük bir site için yeterli.
+      MSSQL_PID: Express
+      MSSQL_MEMORY_LIMIT_MB: 1536
       MSSQL_SA_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD .env dosyasında tanımlı olmalı}
     volumes:
       - sqldata:/var/opt/mssql
@@ -40,9 +43,27 @@ services:
     restart: unless-stopped
     depends_on:
       - api
+    # NOT: Dışarıya artık caddy açılıyor, web sadece docker ağı içinden erişilebilir
+
+  # HTTPS: Caddy, Let's Encrypt sertifikasını kendisi alıp yeniliyor ve istekleri web'e iletiyor
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - web
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
     ports:
-      - "${WEB_PORT:-8080}:80"
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
 
 volumes:
   sqldata:
   uploads:
+  caddy_data:
+  caddy_config:

@@ -137,20 +137,17 @@ cp .env.example .env      # içindeki değerleri değiştir
 docker compose up -d --build
 ```
 
-Site `http://localhost:8080` adresinde açılır. SQL Server ve API portları dışarı açık değil, tüm istekler nginx üzerinden geçiyor.
+Site `https://localhost` adresinde açılır (Caddy yerel bir sertifika üretir, tarayıcı ilk seferde uyarı verebilir). SQL Server ve API portları dışarı açık değil, istekler Caddy → nginx üzerinden geçiyor.
 
 ## Yayına alma
 
-En basit yol: Docker kurulu bir VPS (Hetzner, DigitalOcean, Azure VM vb.) + alan adı.
+Docker kurulu bir VPS (en az 4 GB RAM, x86) + alan adı yeterli.
 
-1. Sunucuya repoyu çek, `.env` dosyasını oluştur, `docker compose up -d --build`.
-2. Önüne HTTPS sağlayan bir reverse proxy koy. Örnek **Caddy** (sertifikayı otomatik alır):
-   ```
-   erselgemici.com {
-       reverse_proxy localhost:8080
-   }
-   ```
-3. **HTTPS zorunlu:** refresh token cookie'si `Secure` olduğu için admin girişi sadece HTTPS üzerinde çalışır (localhost hariç).
+1. Alan adının DNS ayarında `A` kaydıyla domaini sunucunun IP'sine yönlendir (`@` ve `www`).
+2. Sunucuya repoyu çek, `.env` dosyasını oluştur ve `DOMAIN=alanadin.com` yaz.
+3. `docker compose up -d --build`. Caddy HTTPS sertifikasını otomatik alır.
+
+> **HTTPS zorunlu:** refresh token cookie'si `Secure` olduğu için admin girişi sadece HTTPS üzerinde çalışır (localhost hariç).
 
 > `client/src/index.html` içindeki tema script'ini değiştirirsen, `client/nginx.conf` içindeki CSP hash'ini de güncellemen gerekir. Yoksa tarayıcı script'i engeller.
 

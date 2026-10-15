@@ -51,6 +51,8 @@ public static class ApiServiceExtensions
         services.Configure<ForwardedHeadersOptions>(o =>
         {
             o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            // Önde iki proxy var (caddy -> nginx). Header sağdan okunuyor, 2 adım geri gidince gerçek IP'ye ulaşılıyor.
+            o.ForwardLimit = 2;
             o.KnownNetworks.Clear();
             o.KnownProxies.Clear();
         });
