@@ -23,7 +23,7 @@ public static class DependencyInjection
         AddPersistence(services, configuration);
         AddIdentityAndJwt(services, configuration);
 
-        services.AddScoped<IFileStorage, LocalFileStorage>();
+        services.AddScoped<IFileStorage, DatabaseFileStorage>();
 
         services.AddHealthChecks()
             .AddDbContextCheck<AppDbContext>("database");

@@ -33,7 +33,7 @@ Backend **.NET 9 Web API** (Clean Architecture), frontend **Angular 20**, verita
 | Veri | Entity Framework Core 9, PostgreSQL (Npgsql), `Select` projeksiyonları, complex type, primitive collection |
 | Kimlik | ASP.NET Core Identity, JWT (access token) + refresh token (httpOnly cookie) |
 | Frontend | Angular 20: standalone component, signals, yeni control flow (`@if`, `@for`), functional interceptor/guard, lazy loading |
-| Altyapı | Docker, Docker Compose, nginx, GitHub Actions |
+| Altyapı | Docker (tek imaj: API + Angular), Docker Compose, Caddy, GitHub Actions |
 | Test | xUnit |
 
 ## Mimari
@@ -68,7 +68,7 @@ Handler'lar HTTP'den habersiz, `Result` dönüyor; API katmanı bunu `200 / 404 
 - **Hesap kilitleme**: 5 hatalı denemede 15 dk kilit (Identity lockout).
 - **Dosya yükleme**: uzantı beyaz listesi + dosyanın ilk byte'larına (magic number) bakarak içerik kontrolü, rastgele dosya adı, boyut sınırı, SVG yasak.
 - **XSS**: linkler sadece `http/https` olabiliyor (backend validator). Markdown önce escape ediliyor, sonra Angular tekrar sanitize ediyor.
-- **Güvenlik header'ları**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (API + nginx).
+- **Güvenlik header'ları**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy (API ve Angular sayfaları için ayrı CSP).
 - **Gizli bilgiler** repoda yok: geliştirmede `user-secrets`, sunucuda ortam değişkenleri (`.env`).
 - Hatalar **ProblemDetails** formatında, production'da stack trace dışarı verilmiyor.
 
@@ -137,19 +137,31 @@ cp .env.example .env      # içindeki değerleri değiştir
 docker compose up -d --build
 ```
 
-Site `https://localhost` adresinde açılır (Caddy yerel bir sertifika üretir, tarayıcı ilk seferde uyarı verebilir). Veritabanı ve API portları dışarı açık değil, istekler Caddy → nginx üzerinden geçiyor.
+Site `https://localhost` adresinde açılır (Caddy yerel bir sertifika üretir, tarayıcı ilk seferde uyarı verebilir). Veritabanı ve API portları dışarı açık değil, istekler Caddy üzerinden geçiyor. Angular derlenip API'nin `wwwroot` klasörüne konuyor, tek container hem sayfaları hem `/api`'yi sunuyor.
 
 ## Yayına alma
 
-Docker kurulu bir VPS (2 GB RAM yeterli, x86 ya da ARM) + alan adı yeterli.
+Site şu an ücretsiz servislerle yayında:
 
-1. Alan adının DNS ayarında `A` kaydıyla domaini sunucunun IP'sine yönlendir (`@` ve `www`).
-2. Sunucuya repoyu çek, `.env` dosyasını oluştur ve `DOMAIN=alanadin.com` yaz.
-3. `docker compose up -d --build`. Caddy HTTPS sertifikasını otomatik alır.
+- **Render** (Free web service): kök dizindeki `Dockerfile` ile tek container
+- **Neon** (Free Postgres): veritabanı
+- Yüklenen görseller veritabanında (`StoredFiles` tablosu) tutuluyor, çünkü Render'ın diski kalıcı değil.
+- `.github/workflows/keep-alive.yml` 10 dakikada bir `/ping` çağırıp sitenin uykuya geçmesini engelliyor.
+
+Render'da tanımlanması gereken ortam değişkenleri:
+
+| Değişken | Açıklama |
+|---|---|
+| `ConnectionStrings__Default` | Neon bağlantı cümlesi (`Host=...;Database=...;Username=...;Password=...;SSL Mode=Require`) |
+| `Jwt__Key` | En az 32 karakterlik rastgele değer |
+| `Seed__AdminEmail`, `Seed__AdminPassword`, `Seed__AdminFullName` | İlk admin kullanıcı |
+| `ReverseProxy__ForwardLimit` | `2` (Render kendi IP'sini de X-Forwarded-For'a ekliyor) |
+
+Kendi sunucunda çalıştırmak istersen: `.env` dosyasında `DOMAIN=alanadin.com` yaz, DNS'te domaini sunucunun IP'sine yönlendir ve `docker compose up -d --build` çalıştır. Caddy HTTPS sertifikasını otomatik alır.
 
 > **HTTPS zorunlu:** refresh token cookie'si `Secure` olduğu için admin girişi sadece HTTPS üzerinde çalışır (localhost hariç).
 
-> `client/src/index.html` içindeki tema script'ini değiştirirsen, `client/nginx.conf` içindeki CSP hash'ini de güncellemen gerekir. Yoksa tarayıcı script'i engeller.
+> `client/src/index.html` içindeki tema script'ini değiştirirsen, `server/src/PortfolioPro.API/Middleware/SecurityHeaders.cs` içindeki CSP hash'ini de güncellemen gerekir. Yoksa tarayıcı script'i engeller.
 
 ## Ekran görüntüleri
 

@@ -16,10 +16,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    # NOT: Veritabanı portu dışarı açık değil, sadece api container'ı erişebiliyor
+    # NOT: Veritabanı portu dışarı açık değil, sadece uygulama container'ı erişebiliyor
 
-  api:
-    build: ./server
+  # Tek imaj: .NET API + derlenmiş Angular (kök dizindeki Dockerfile)
+  app:
+    build: .
     restart: unless-stopped
     depends_on:
       db:
@@ -31,23 +32,14 @@ services:
       Seed__AdminEmail: ${ADMIN_EMAIL}
       Seed__AdminPassword: ${ADMIN_PASSWORD}
       Seed__AdminFullName: ${ADMIN_FULL_NAME:-Admin}
-    volumes:
-      - uploads:/app/wwwroot/uploads
-    # API portu da dışarı açık değil, istekler nginx (web) üzerinden geliyor
+    # NOT: Uygulama portu dışarı açık değil, istekler Caddy üzerinden geliyor
 
-  web:
-    build: ./client
-    restart: unless-stopped
-    depends_on:
-      - api
-    # NOT: Dışarıya artık caddy açılıyor, web sadece docker ağı içinden erişilebilir
-
-  # HTTPS: Caddy, Let's Encrypt sertifikasını kendisi alıp yeniliyor ve istekleri web'e iletiyor
+  # HTTPS: Caddy, Let's Encrypt sertifikasını kendisi alıp yeniliyor ve istekleri uygulamaya iletiyor
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
     depends_on:
-      - web
+      - app
     environment:
       DOMAIN: ${DOMAIN:-localhost}
     ports:
@@ -61,6 +53,5 @@ services:
 
 volumes:
   pgdata:
-  uploads:
   caddy_data:
   caddy_config:

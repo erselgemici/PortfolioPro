@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PortfolioPro.Application.Common.Abstractions;
 using PortfolioPro.Domain.Entities;
 using PortfolioPro.Infrastructure.Identity;
+using PortfolioPro.Infrastructure.Storage;
 
 namespace PortfolioPro.Infrastructure.Persistence;
 
@@ -20,6 +21,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 
     // Application katmanı bunu görmüyor, sadece AuthService kullanıyor
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<StoredFile> Files => Set<StoredFile>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

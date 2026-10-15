@@ -4,8 +4,14 @@ using PortfolioPro.API.Middleware;
 using PortfolioPro.Application;
 using PortfolioPro.Infrastructure;
 using PortfolioPro.Infrastructure.Persistence;
+using PortfolioPro.Infrastructure.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// NOT: Render gibi platformlar uygulamanın dinleyeceği portu PORT ortam değişkeniyle veriyor
+var port = Environment.GetEnvironmentVariable("PORT");
+if (!string.IsNullOrEmpty(port))
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // ---------------- Servisler (DI) ----------------
 // NOT: Her katman kendi servislerini kendi DependencyInjection sınıfında kaydediyor,
@@ -21,7 +27,7 @@ await app.InitializeDatabaseAsync();
 // ---------------- Middleware pipeline ----------------
 // NOT: Sıra önemli! İstek yukarıdan aşağı, cevap aşağıdan yukarı geçiyor.
 
-app.UseForwardedHeaders();      // nginx arkasında gerçek IP ve https bilgisini al (rate limit IP'ye göre çalışıyor)
+app.UseForwardedHeaders();      // proxy (Caddy / Render) arkasında gerçek IP ve https bilgisini al (rate limit IP'ye göre çalışıyor)
 app.UseExceptionHandler();      // yakalanmayan hataları ProblemDetails JSON'a çevir
 
 if (!app.Environment.IsDevelopment())
@@ -29,7 +35,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseSecurityHeaders();
 app.UseResponseCompression();
-app.UseUploadsStaticFiles();    // /uploads altındaki yüklenen görseller
+app.UseSpaStaticFiles();        // Angular'ın derlenmiş dosyaları (wwwroot). Development'ta arayüz ng serve ile ayrı çalışıyor.
 
 app.UseRouting();
 app.UseCors();
@@ -45,10 +51,19 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapHealthChecks("/health").DisableRateLimiting();
+// Uyku moduna girmesin diye dışarıdan düzenli çağrılan hafif endpoint. Veritabanına gitmiyor,
+// böylece veritabanı (Neon) boşta kalınca kendi uykusuna geçebiliyor.
+app.MapGet("/ping", () => Results.Ok("pong")).DisableRateLimiting().ExcludeFromDescription();
 
 app.MapPublicEndpoints();
 app.MapAuthEndpoints();
 app.MapAdminEndpoints();
+app.MapStoredFiles();           // /uploads/... yüklenen dosyalar veritabanından
+
+// Bilinmeyen /api adresleri 404 dönsün, Angular sayfası dönmesin
+app.Map("/api/{**rest}", () => Results.NotFound()).ExcludeFromDescription();
+// Geri kalan tüm adresler (ör. /projects/devlog) Angular'ın index.html'ine düşer, yönlendirmeyi Angular router yapar
+app.MapFallbackToFile("index.html");
 
 app.Run();
 

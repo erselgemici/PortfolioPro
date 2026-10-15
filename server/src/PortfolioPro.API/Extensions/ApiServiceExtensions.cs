@@ -45,14 +45,15 @@ public static class ApiServiceExtensions
         });
         services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
-        // NOT: API docker'da nginx'in arkasında çalışıyor. nginx gerçek kullanıcı IP'sini X-Forwarded-For
-        // header'ında gönderiyor. Bunu okumazsak her istek nginx'in IP'sinden geliyor gibi görünür ve
+        // NOT: API bir proxy'nin (Caddy ya da Render) arkasında çalışıyor. Proxy gerçek kullanıcı IP'sini X-Forwarded-For
+        // header'ında gönderiyor. Bunu okumazsak her istek proxy'nin IP'sinden geliyor gibi görünür ve
         // rate limit herkesi tek kişi sayar. API portu dışarı açık olmadığı için listeyi temizlemek güvenli.
         services.Configure<ForwardedHeadersOptions>(o =>
         {
             o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            // Önde iki proxy var (caddy -> nginx). Header sağdan okunuyor, 2 adım geri gidince gerçek IP'ye ulaşılıyor.
-            o.ForwardLimit = 2;
+            // X-Forwarded-For sağdan okunuyor. Caddy'de 1 adım yeterli. Render kendi IP'sini de listeye eklediği için
+            // orada 2 olmalı (ortam değişkeni: ReverseProxy__ForwardLimit=2). Fazla verilirse kullanıcı sahte IP yazabilir.
+            o.ForwardLimit = configuration.GetValue("ReverseProxy:ForwardLimit", 1);
             o.KnownNetworks.Clear();
             o.KnownProxies.Clear();
         });

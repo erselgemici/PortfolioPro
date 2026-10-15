@@ -1,10 +1,10 @@
-# Caddy: HTTPS sertifikasını otomatik alır (Let's Encrypt) ve istekleri web container'ına iletir.
+# Caddy: HTTPS sertifikasını otomatik alır (Let's Encrypt) ve istekleri uygulama container'ına iletir.
 # DOMAIN değeri .env dosyasından geliyor (örn. erselgemici.com).
 
 {$DOMAIN} {
 	encode zstd gzip
 	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
-	reverse_proxy web:80
+	reverse_proxy app:8080
 }
 
 # www ile gelenleri asıl adrese yönlendir
