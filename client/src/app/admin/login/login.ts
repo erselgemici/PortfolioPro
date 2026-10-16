@@ -92,8 +92,8 @@ export class Login {
     this.auth.login(email, password).subscribe({
       next: () => {
         // Guard bizi login'e yönlendirdiyse, girmek istediğimiz sayfaya geri dön.
-        // NOT: Sadece "/admin" ile başlayan adreslere izin var. Yoksa ?returnUrl=https://kotusite.com
-        // gibi bir linkle kullanıcı giriş yaptıktan sonra başka siteye yönlendirilebilirdi (open redirect).
+        // NOT: Sadece "/admin" ile başlayan adreslere geri dönüyoruz. Yoksa ?returnUrl=https://kotusite.com
+        // gibi bir linkle kullanıcı giriş yaptıktan sonra başka bir siteye gönderilebilirdi.
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
         this.router.navigateByUrl(returnUrl?.startsWith('/admin') ? returnUrl : '/admin');
       },

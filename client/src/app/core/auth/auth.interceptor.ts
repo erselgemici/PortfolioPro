@@ -10,11 +10,11 @@ function needsToken(req: HttpRequest<unknown>): boolean {
 }
 
 function withToken(req: HttpRequest<unknown>, token: string | null): HttpRequest<unknown> {
-  // NOT: HttpRequest immutable, direkt değiştirilemiyor. clone ile kopyalayıp header ekliyoruz.
+  // NOT: Angular'da gelen istek nesnesi değiştirilemiyor. clone ile kopyasını alıp header'ı ona ekliyoruz.
   return token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req;
 }
 
-// Functional interceptor (Angular 15+). DevLog'daki class tabanlı interceptor'ın yeni hali.
+// Angular 15'ten beri interceptor'ı class yerine fonksiyon olarak yazabiliyoruz. DevLog'dakinin yeni hali.
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   if (!needsToken(req)) return next(req);
 

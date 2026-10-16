@@ -19,8 +19,9 @@ public sealed record ProfileDto(
     int YearsOfExperience,
     bool IsOpenToWork)
 {
-    // NOT: Projeksiyonu Expression olarak yazdım. Select(ProfileDto.Projection) dediğimde EF Core bunu
-    // SQL'e çeviriyor ve sadece bu kolonları çekiyor. AutoMapper kullanmadan da aynı işi görüyor.
+    // NOT: Select içinde kullanılacak dönüşümü burada bir kere yazdım (Expression olarak).
+    // Select(ProfileDto.Projection) deyince EF Core bunu SQL'e çeviriyor ve sadece bu kolonları çekiyor.
+    // Bu sayede AutoMapper'a gerek kalmadı.
     public static readonly Expression<Func<SiteProfile, ProfileDto>> Projection = p => new ProfileDto(
         p.FullName,
         new LocalizedDto(p.Title.Tr, p.Title.En),

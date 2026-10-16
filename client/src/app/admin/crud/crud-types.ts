@@ -1,6 +1,6 @@
 import { AdminResource, UploadKind } from '../../core/api/admin-api.service';
 
-// NOT: Admin formları "config-driven". Her sayfa için ayrı form HTML'i yazmak yerine alanları
+// NOT: Admin formlarını bir ayar listesinden üretiyorum. Her sayfa için ayrı form HTML'i yazmak yerine alanları
 // bir dizi olarak tanımlıyorum, DynamicForm component'i bu diziden formu kendisi oluşturuyor.
 // Yeni bir alan eklemek için sadece bu listeye bir satır eklemek yetiyor.
 

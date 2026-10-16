@@ -109,7 +109,7 @@ export class CrudPage {
 
     this.api.remove(this.config.resource, row.id).subscribe({
       next: () => {
-        // Listeyi tekrar çekmeden satırı çıkarıyoruz (optimistic değil, cevap geldikten sonra)
+        // Listeyi API'den tekrar çekmeden silinen satırı listeden çıkarıyoruz (API'den başarılı cevap geldikten sonra)
         this.rows.update((list) => list.filter((r) => r.id !== row.id));
         this.toast.success(`${this.config.singular} silindi.`);
       },

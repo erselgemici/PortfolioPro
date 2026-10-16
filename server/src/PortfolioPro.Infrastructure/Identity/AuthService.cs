@@ -64,8 +64,8 @@ internal sealed class AuthService(
         if (stored is null)
             return InvalidRefreshToken;
 
-        // NOT: Reuse detection. İptal edilmiş bir token tekrar kullanılıyorsa, token çalınmış olabilir.
-        // Önlem olarak o kullanıcının TÜM aktif oturumlarını kapatıyoruz.
+        // NOT: İptal edilmiş bir token tekrar geldiyse token çalınmış olabilir (reuse detection).
+        // Önlem olarak o kullanıcının açık olan BÜTÜN oturumlarını kapatıyoruz.
         if (stored.RevokedAt is not null)
         {
             logger.LogWarning("İptal edilmiş refresh token tekrar kullanıldı, tüm oturumlar kapatılıyor: {UserId}", stored.UserId);
@@ -80,7 +80,7 @@ internal sealed class AuthService(
         if (user is null || await userManager.IsLockedOutAsync(user))
             return InvalidRefreshToken;
 
-        // Rotation: eskiyi iptal et, yenisini ver
+        // Her yenilemede eski token'ı iptal edip yenisini veriyoruz (rotation)
         var tokens = await IssueTokensAsync(user, ct, replacing: stored);
         return tokens;
     }
@@ -189,7 +189,7 @@ internal sealed class AuthService(
             .Where(t => t.UserId == userId && t.RevokedAt == null)
             .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, now), ct);
 
-    // Tahmin edilemez rastgele değer. Random sınıfı DEĞİL, kriptografik RandomNumberGenerator kullanılmalı
+    // Tahmin edilemeyen rastgele değer. Random sınıfının ürettiği sayılar tahmin edilebilir, güvenlik için RandomNumberGenerator kullanılmalı
     private static string GenerateRefreshToken() =>
         Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(64));
 

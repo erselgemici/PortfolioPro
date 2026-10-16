@@ -67,5 +67,6 @@ app.MapFallbackToFile("index.html");
 
 app.Run();
 
-// NOT: İleride integration test yazarken WebApplicationFactory<Program> bu sınıfa erişebilsin diye
+// NOT: İleride API'yi gerçekten çalıştırarak test yazmak istersem (integration test),
+// test projesi bu sınıfa erişebilsin diye
 public partial class Program { }

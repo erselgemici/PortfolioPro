@@ -46,7 +46,7 @@ internal sealed class UpdateProfileCommandHandler(IAppDbContext db) : IRequestHa
 {
     public async Task Handle(UpdateProfileCommand request, CancellationToken ct)
     {
-        // Upsert: kayıt yoksa oluştur, varsa güncelle. Tabloda hep tek satır olacak.
+        // Kayıt yoksa oluştur, varsa güncelle (upsert). Bu tabloda hep tek satır olacak.
         var profile = await db.Profiles.FirstOrDefaultAsync(ct);
         if (profile is null)
         {

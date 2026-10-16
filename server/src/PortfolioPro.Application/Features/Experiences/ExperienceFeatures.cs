@@ -11,7 +11,7 @@ using PortfolioPro.Domain.Entities;
 namespace PortfolioPro.Application.Features.Experiences;
 
 // NOT: Küçük CRUD özelliklerinde dto, query, command, validator ve handler'ı tek dosyada tuttum.
-// Bir özelliğe bakarken 6 dosya arasında gezmemek için (vertical slice yaklaşımı).
+// Bir özelliğe bakarken 6 farklı dosya arasında gezmemek için.
 
 public sealed record ExperienceDto(
     Guid Id,
@@ -121,7 +121,7 @@ internal sealed class DeleteExperienceCommandHandler(IAppDbContext db)
 {
     public async Task<Result> Handle(DeleteExperienceCommand request, CancellationToken ct)
     {
-        // NOT: ExecuteDeleteAsync (EF Core 7+) kaydı önce belleğe çekmeden direkt DELETE sorgusu atıyor
+        // NOT: ExecuteDeleteAsync kaydı önce veritabanından çekmeden direkt DELETE sorgusu çalıştırıyor, daha hızlı
         var deleted = await db.Experiences.Where(e => e.Id == request.Id).ExecuteDeleteAsync(ct);
         return deleted == 0
             ? Error.NotFound("experience.not_found", "Deneyim bulunamadı.")

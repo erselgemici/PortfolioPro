@@ -83,8 +83,8 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();
 
-        // NOT: JwtBearer ayarlarını burada IOptions<JwtOptions> üzerinden veriyoruz.
-        // Direkt configuration'dan okusaydık, "dotnet ef" komutları çalışırken Key boş olduğu için hata alırdık.
+        // NOT: JWT ayarlarını burada IOptions<JwtOptions> üzerinden veriyorum.
+        // Direkt configuration'dan okusaydım, "dotnet ef" komutları çalışırken Key boş olduğu için hata alıyordum.
         services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
             .Configure<IOptions<JwtOptions>>((options, jwtOptions) =>
             {

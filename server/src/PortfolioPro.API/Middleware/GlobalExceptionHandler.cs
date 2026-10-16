@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace PortfolioPro.API.Middleware;
 
-// .NET 8 ile gelen IExceptionHandler. DevLog'daki custom middleware'in yerini tutuyor.
-// Cevaplar RFC 7807 ProblemDetails formatında: { type, title, status, detail, errors }
+// Yakalanmayan bütün hatalar buraya düşüyor (.NET 8 ile gelen IExceptionHandler).
+// DevLog'da bunun için kendi middleware'imi yazmıştım, burada .NET'in hazır yapısını kullandım.
+// Kullanıcıya her zaman aynı formatta JSON dönüyoruz (ProblemDetails): { type, title, status, detail, errors }
 internal sealed class GlobalExceptionHandler(
     IProblemDetailsService problemDetailsService,
     IHostEnvironment environment,

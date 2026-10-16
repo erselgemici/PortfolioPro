@@ -22,7 +22,7 @@ internal sealed class GetDashboardQueryHandler(IAppDbContext db) : IRequestHandl
     public async Task<DashboardDto> Handle(GetDashboardQuery request, CancellationToken ct)
     {
         // NOT: CountAsync veritabanında COUNT(*) çalıştırıyor, kayıtları belleğe çekmiyor.
-        // DbContext aynı anda tek sorgu çalıştırabildiği için Task.WhenAll yerine sırayla await ediyoruz.
+        // Aynı DbContext ile aynı anda iki sorgu çalıştırılamıyor, o yüzden Task.WhenAll yerine sorguları sırayla bekliyoruz.
         var projects = await db.Projects.CountAsync(ct);
         var published = await db.Projects.CountAsync(p => p.IsPublished, ct);
         var skills = await db.Skills.CountAsync(ct);

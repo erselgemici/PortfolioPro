@@ -10,7 +10,7 @@ export class AuthService {
   private readonly router = inject(Router);
 
   // NOT: Access token SADECE bellekte (signal) tutuluyor, localStorage'a yazılmıyor.
-  // localStorage'daki veriyi sayfadaki herhangi bir script okuyabilir (XSS). Sayfa yenilenince token
+  // localStorage'daki veriyi sayfadaki her script okuyabilir; kötü niyetli bir script sızarsa (XSS) token çalınır. Sayfa yenilenince token
   // kayboluyor ama sorun değil: httpOnly cookie'deki refresh token ile sessizce yenisi alınıyor.
   private readonly token = signal<string | null>(null);
   private readonly expiresAt = signal<number>(0);

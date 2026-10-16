@@ -5,8 +5,8 @@ using PortfolioPro.Infrastructure.Identity;
 
 namespace PortfolioPro.Infrastructure.Persistence.Configurations;
 
-// NOT: Fluent API ayarlarını entity sınıflarına attribute olarak yazmak yerine burada tutuyorum.
-// Böylece Domain katmanı EF Core'dan habersiz kalıyor.
+// NOT: Tablo ayarlarını (uzunluk, index vb.) entity'lerin üstüne attribute olarak yazmak yerine burada tutuyorum.
+// Böylece Domain katmanı EF Core'u hiç bilmiyor.
 
 internal sealed class SiteProfileConfiguration : IEntityTypeConfiguration<SiteProfile>
 {

@@ -16,11 +16,11 @@ public class Project : BaseEntity
     public string? LiveUrl { get; set; }
     public string? StoreUrl { get; set; }
 
-    // NOT: EF Core 8+ primitive collection desteği. List<string> ayrı tablo açmadan
-    // PostgreSQL'de dizi (text[]) olarak tek kolonda saklanıyor: ["C#", "Angular"]
+    // NOT: EF Core 8'den beri List<string> gibi basit listeler ayrı tablo açmadan saklanabiliyor.
+    // PostgreSQL'de tek kolonda dizi olarak duruyor: ["C#", "Angular"]
     public List<string> Technologies { get; set; } = [];
 
-    // Projenin yapıldığı tarih (ay/yıl). Siteda projeler buna göre sıralanıyor: en yeni en üstte.
+    // Projenin yapıldığı tarih (ay/yıl). Sitede projeler buna göre sıralanıyor: en yeni en üstte.
     // NOT: CreatedAt'i kullanmadım çünkü o kaydın veritabanına eklendiği an; eski bir projeyi bugün eklesem en üstte çıkardı.
     public DateOnly ProjectDate { get; set; }
 

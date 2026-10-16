@@ -22,7 +22,7 @@ public static class DbInitializer
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(DbInitializer));
         var db = services.GetRequiredService<AppDbContext>();
 
-        // Bekleyen migration varsa uygula. Production'da bunu kapatıp migration'ı CI'da çalıştırmak da bir seçenek.
+        // Bekleyen migration varsa uygula. Büyük projelerde bu iş genelde deploy sırasında ayrıca yapılıyor.
         // Migration hiç oluşturulmadıysa tablolar oluşmaz ve aşağıda anlaşılması zor bir SQL hatası alınır.
         // Bunun yerine ne yapılması gerektiğini söyleyen açık bir hata veriyoruz.
         if (!db.Database.GetMigrations().Any())

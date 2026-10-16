@@ -13,7 +13,7 @@ public static partial class SecurityHeaders
             headers["Referrer-Policy"] = "strict-origin-when-cross-origin";
             headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()";
 
-            // API sadece JSON dönüyor, sayfa çizmiyor. Bu yüzden en sıkı CSP'yi verebiliriz.
+            // API sadece JSON dönüyor, sayfa göstermiyor. Bu yüzden en sıkı güvenlik ayarını (CSP) verebiliriz.
             // Swagger arayüzü script çalıştırdığı için onu hariç tutuyoruz (sadece development'ta açık).
             if (context.Request.Path.StartsWithSegments("/api"))
                 headers.ContentSecurityPolicy = "default-src 'none'; frame-ancestors 'none'";
@@ -23,8 +23,8 @@ public static partial class SecurityHeaders
             await next();
         });
 
-    // Angular sayfaları için CSP: sadece kendi domainimizden script çalışabilir.
-    // index.html'deki tema script'i hash ile izinli.
+    // Angular sayfaları için CSP: tarayıcıya sadece kendi sitemizden gelen script'leri çalıştırmasını söylüyor.
+    // index.html'deki tema script'i sayfanın içine yazılı olduğu için onu hash'i ile izinli listeye ekledim.
     // NOT: index.html'deki o script değişirse bu hash'i de güncellemek gerekiyor (README'de anlatıldı).
     private const string PageCsp =
         "default-src 'self'; script-src 'self' 'sha256-O1i3i81KmXoG2Op2VbIN0HPTtNW8n13R3HXSMKCtL5M='; " +

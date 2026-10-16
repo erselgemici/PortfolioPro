@@ -34,7 +34,7 @@ public static partial class SlugHelper
         return slug.Length > 80 ? slug[..80].TrimEnd('-') : slug;
     }
 
-    // NOT: [GeneratedRegex] .NET 7 ile geldi. Regex derleme zamanında üretiliyor, daha hızlı
+    // NOT: [GeneratedRegex] ile regex uygulama derlenirken hazırlanıyor. Her çağrıda baştan oluşturulmadığı için daha hızlı.
     [GeneratedRegex("[^a-z0-9]+")]
     private static partial Regex NonAlphaNumeric();
 

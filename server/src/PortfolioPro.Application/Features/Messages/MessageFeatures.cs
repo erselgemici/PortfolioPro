@@ -78,8 +78,8 @@ internal sealed class SetMessageReadCommandHandler(IAppDbContext db) : IRequestH
 {
     public async Task<Result> Handle(SetMessageReadCommand request, CancellationToken ct)
     {
-        // NOT: ExecuteUpdateAsync tek alanı güncellemek için kaydı belleğe çekmeden UPDATE atıyor.
-        // Dikkat: bu yöntem SaveChanges'i ve interceptor'ı atlıyor, UpdatedAt'i elle set etmek gerekirdi.
+        // NOT: ExecuteUpdateAsync tek bir alanı, kaydı çekmeden direkt UPDATE sorgusuyla güncelliyor.
+        // Dikkat: SaveChanges'i kullanmadığı için AuditInterceptor çalışmıyor, UpdatedAt kendiliğinden dolmuyor.
         var updated = await db.ContactMessages
             .Where(m => m.Id == request.Id)
             .ExecuteUpdateAsync(s => s.SetProperty(m => m.IsRead, request.IsRead), ct);

@@ -4,8 +4,8 @@ import { TranslationKey } from './translations';
 import { Localized } from '../models';
 
 // {{ 'nav.about' | t }}
-// NOT: pure: false. Pipe'ın girdisi ('nav.about') hiç değişmiyor ama dil değişince sonucun değişmesi lazım.
-// Pure pipe olsaydı Angular girdiye bakıp "aynı" der ve tekrar çalıştırmazdı.
+// NOT: pure: false yaptım. Pipe'a giden değer ('nav.about') hiç değişmiyor ama dil değişince sonucun değişmesi lazım.
+// pure olsaydı Angular "değer aynı" deyip pipe'ı tekrar çalıştırmazdı ve ekrandaki dil değişmezdi.
 @Pipe({ name: 't', pure: false })
 export class TranslatePipe implements PipeTransform {
   private readonly i18n = inject(I18nService);

@@ -15,13 +15,13 @@ public static class DependencyInjection
         {
             cfg.RegisterServicesFromAssembly(assembly);
             // NOT: Her istek handler'a gitmeden önce ValidationBehavior'dan geçiyor.
-            // AddOpenBehavior generic tipi (<,>) tüm istekler için kaydediyor
+            // AddOpenBehavior ile bunu tek tek değil, bütün istekler için bir kerede kaydediyoruz
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
 
         // AbstractValidator'dan türeyen bütün sınıfları bulup DI'a ekliyor.
-        // NOT: LocalizedDtoValidator constructor'da parametre (maxLength) istiyor, DI bunu oluşturamaz.
-        // Zaten onu diğer validator'ların içinde "new" ile kullanıyoruz, bu yüzden taramadan hariç tutuyoruz.
+        // NOT: LocalizedDtoValidator oluşturulurken bir sayı (maxLength) istiyor, DI bu sayıyı bilemez.
+        // Onu zaten diğer validator'ların içinde "new" ile kullanıyoruz, o yüzden otomatik taramadan çıkardım.
         services.AddValidatorsFromAssembly(
             assembly,
             filter: r => r.ValidatorType != typeof(LocalizedDtoValidator),

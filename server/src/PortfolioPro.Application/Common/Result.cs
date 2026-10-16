@@ -19,8 +19,8 @@ public class Result
     public static Result<T> Success<T>(T value) => new(value, true, null);
     public static Result<T> Failure<T>(Error error) => new(default, false, error);
 
-    // NOT: implicit operator sayesinde handler'da "return Result.Failure(...)" yerine
-    // direkt "return ProjectErrors.NotFound;" yazabiliyoruz
+    // NOT: implicit operator sayesinde Error, Result'a kendiliğinden çevriliyor.
+    // Handler'da "return Result.Failure(...)" yerine direkt "return ProjectErrors.NotFound;" yazmak yetiyor.
     public static implicit operator Result(Error error) => Failure(error);
 }
 
@@ -33,7 +33,7 @@ public class Result<T> : Result
         _value = value;
     }
 
-    // Başarısız sonucun Value'suna erişmek bir programlama hatasıdır, bu yüzden exception
+    // Başarısız bir sonucun Value'suna erişmek kodda bir hata demek, bu yüzden burada exception fırlatıyoruz
     public T Value => IsSuccess
         ? _value!
         : throw new InvalidOperationException("Başarısız bir sonucun değerine erişilemez.");

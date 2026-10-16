@@ -8,9 +8,9 @@ namespace PortfolioPro.API.Endpoints;
 
 public static class AuthEndpoints
 {
-    // NOT: Refresh token JavaScript'in okuyamadığı httpOnly cookie'de duruyor.
-    // Access token ise Angular'da sadece bellekte (localStorage'da DEĞİL). Sayfada bir XSS açığı olsa bile
-    // saldırgan uzun ömürlü refresh token'a erişemiyor.
+    // NOT: Refresh token httpOnly cookie'de duruyor. httpOnly olunca JavaScript bu cookie'yi okuyamıyor.
+    // Access token ise Angular'da sadece bellekte tutuluyor, localStorage'a yazmıyorum.
+    // Böylece sayfaya kötü niyetli bir script sızsa bile (XSS) uzun ömürlü refresh token'ı alamaz.
     private const string RefreshCookieName = "pp_refresh";
     private const string RefreshCookiePath = "/api/auth";
 
@@ -46,8 +46,8 @@ public static class AuthEndpoints
 
                 return SignIn(http, result.Value);
             });
-        // NOT: Refresh'e login gibi sıkı limit koymadım. Sayfa her yenilendiğinde refresh çağrılıyor,
-        // 64 byte'lık rastgele token tahmin edilemeyeceği için genel limit (dakikada 120) yeterli.
+        // NOT: Refresh'e login gibi sıkı limit koymadım, çünkü sayfa her yenilendiğinde refresh çağrılıyor.
+        // Token 64 byte'lık rastgele bir değer, tahmin edilemez. Genel limit (dakikada 120) yeterli.
 
         auth.MapPost("/logout", async (ISender sender, HttpContext http, CancellationToken ct) =>
         {

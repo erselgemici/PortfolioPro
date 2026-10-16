@@ -59,7 +59,7 @@ import { MonthYearPipe } from '../../shared/date.pipe';
           }
 
           <div class="layout">
-            <!-- NOT: renderMarkdown önce HTML'i escape ediyor, sonra Angular [innerHTML] tekrar sanitize ediyor -->
+            <!-- NOT: renderMarkdown önce HTML karakterlerini zararsız hale getiriyor (escape), sonra Angular da [innerHTML]'i ayrıca temizliyor -->
             <div class="prose" [innerHTML]="contentHtml()"></div>
 
             <aside class="side card">

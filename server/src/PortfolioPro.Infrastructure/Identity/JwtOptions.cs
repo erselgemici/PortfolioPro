@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PortfolioPro.Infrastructure.Identity;
 
-// appsettings.json'daki "Jwt" bölümü bu sınıfa bağlanıyor (Options pattern)
+// appsettings.json'daki "Jwt" bölümü otomatik olarak bu sınıfa dolduruluyor (Options pattern)
 public sealed class JwtOptions
 {
     public const string SectionName = "Jwt";

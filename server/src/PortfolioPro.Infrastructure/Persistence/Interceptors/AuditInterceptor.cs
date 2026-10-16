@@ -6,7 +6,7 @@ namespace PortfolioPro.Infrastructure.Persistence.Interceptors;
 
 // SaveChanges çağrıldığı an araya girip CreatedAt / UpdatedAt alanlarını dolduruyor.
 // NOT: Her handler'da "entity.CreatedAt = DateTime.UtcNow" yazmak yerine tek yerden yönetiliyor.
-// DateTime.UtcNow yerine TimeProvider kullandım, testlerde zamanı sabitlemek mümkün olsun diye.
+// DateTime.UtcNow yerine TimeProvider kullandım, testlerde saati istediğim değere sabitleyebilmek için.
 public sealed class AuditInterceptor(TimeProvider time) : SaveChangesInterceptor
 {
     public override ValueTask<InterceptionResult<int>> SavingChangesAsync(

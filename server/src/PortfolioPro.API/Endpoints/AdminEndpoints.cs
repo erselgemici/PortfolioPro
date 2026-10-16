@@ -81,9 +81,10 @@ public static class AdminEndpoints
         messages.MapDelete("/{id:guid}", async (Guid id, ISender s, CancellationToken ct) => (await s.Send(new DeleteMessageCommand(id), ct)).ToHttpResult());
 
         // ---------- Dosya yükleme ----------
-        // NOT: IFormFile kullanan endpoint'ler .NET 8+ varsayılan olarak antiforgery token istiyor.
-        // Biz cookie ile değil Authorization header'ındaki JWT ile kimlik doğruladığımız için CSRF riski yok,
-        // bu yüzden kapatıyoruz.
+        // NOT: .NET 8'den beri dosya yükleyen endpoint'lerde "antiforgery" denen bir kontrol otomatik açılıyor.
+        // Bu kontrol, cookie ile giriş yapılan sitelerde başka bir sitenin bizim adımıza istek atmasını (CSRF) engelliyor.
+        // Bizde admin girişi cookie ile değil, header'daki JWT token ile yapılıyor. Başka bir site bu token'ı bilemez,
+        // bu yüzden kontrolü kapattım. Kapatmazsam dosya yükleme isteği reddediliyor.
         admin.MapPost("/uploads", async (IFormFile file, [FromQuery] UploadKind kind, ISender s, CancellationToken ct) =>
             {
                 await using var stream = file.OpenReadStream();

@@ -45,14 +45,15 @@ public static class ApiServiceExtensions
         });
         services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
-        // NOT: API bir proxy'nin (Caddy ya da Render) arkasında çalışıyor. Proxy gerçek kullanıcı IP'sini X-Forwarded-For
-        // header'ında gönderiyor. Bunu okumazsak her istek proxy'nin IP'sinden geliyor gibi görünür ve
-        // rate limit herkesi tek kişi sayar. API portu dışarı açık olmadığı için listeyi temizlemek güvenli.
+        // NOT: Site, araya giren bir sunucunun (proxy: Render ya da Caddy) arkasında çalışıyor.
+        // Ziyaretçinin gerçek IP'si X-Forwarded-For adlı header'da geliyor. Bunu okumazsak bütün istekler
+        // proxy'nin IP'sinden geliyor gibi görünür ve rate limit tüm ziyaretçileri tek kişi sayar.
         services.Configure<ForwardedHeadersOptions>(o =>
         {
             o.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
-            // X-Forwarded-For sağdan okunuyor. Caddy'de 1 adım yeterli. Render kendi IP'sini de listeye eklediği için
-            // orada 2 olmalı (ortam değişkeni: ReverseProxy__ForwardLimit=2). Fazla verilirse kullanıcı sahte IP yazabilir.
+            // Bu header'a her proxy kendi IP'sini ekliyor, o yüzden sondan sayıyoruz. Caddy'de 1 yeterli,
+            // Render'da 2 olmalı (ReverseProxy__ForwardLimit=2 ortam değişkeniyle).
+            // Gereğinden büyük verirsem kullanıcı header'a sahte IP yazıp limiti atlatabilir.
             o.ForwardLimit = configuration.GetValue("ReverseProxy:ForwardLimit", 1);
             o.KnownNetworks.Clear();
             o.KnownProxies.Clear();

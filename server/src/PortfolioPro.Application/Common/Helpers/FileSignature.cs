@@ -19,7 +19,7 @@ public static class FileSignature
         if (!Signatures.TryGetValue(extension, out var signatures))
             return false;
 
-        // NOT: Span yerine normal dizi kullandım, Span lambda içinde kullanılamıyor (ref struct)
+        // NOT: Burada Span yerine normal dizi kullandım. Span lambda içinde kullanılamıyor, derleme hatası veriyordu.
         var header = new byte[12];
         var originalPosition = stream.Position;
         var read = stream.Read(header, 0, header.Length);

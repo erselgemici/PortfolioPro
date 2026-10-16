@@ -1,7 +1,7 @@
 namespace PortfolioPro.Domain.Common;
 
-// Türkçe ve İngilizce metni bir arada tutan küçük bir value object.
-// NOT: EF Core'da ComplexProperty olarak ayarlandı, ayrı tablo açmıyor.
+// Türkçe ve İngilizce metni bir arada tutan küçük bir sınıf.
+// NOT: EF Core'da ComplexProperty olarak ayarladım, bunun için ayrı tablo açılmıyor.
 // Veritabanında Title_Tr ve Title_En diye iki kolon oluşuyor.
 public class LocalizedText
 {
