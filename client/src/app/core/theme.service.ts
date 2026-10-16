@@ -48,6 +48,7 @@ export class ThemeService {
     } catch {
       /* yok say */
     }
-    return 'system';
+    // NOT: İlk girişte koyu tema. Kullanıcı açık temayı seçerse localStorage'da saklanıyor.
+    return 'dark';
   }
 }

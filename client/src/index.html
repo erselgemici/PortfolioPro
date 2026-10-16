@@ -14,9 +14,9 @@
   <!--
     NOT: Tema sayfa çizilmeden ÖNCE ayarlanıyor. Bunu Angular açıldıktan sonra yapsaydık
     koyu tema seçen kullanıcı sayfa açılırken bir anlık beyaz ekran görürdü (flash).
-    nginx CSP'sinde bu script'in hash'i izinli.
+    Varsayılan tema koyu. API'deki CSP'de (SecurityHeaders.cs) bu script'in hash'i izinli.
   -->
-  <script>(function(){try{var t=localStorage.getItem('pp-theme');var d=t==='dark'||((!t||t==='system')&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','light');}})();</script>
+  <script>(function(){try{var t=localStorage.getItem('pp-theme');var d=t!=='light'&&(t!=='system'||matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 </head>
 <body>
   <app-root></app-root>

@@ -27,7 +27,7 @@ public static partial class SecurityHeaders
     // index.html'deki tema script'i hash ile izinli.
     // NOT: index.html'deki o script değişirse bu hash'i de güncellemek gerekiyor (README'de anlatıldı).
     private const string PageCsp =
-        "default-src 'self'; script-src 'self' 'sha256-Bls/RCtw0oDRetFY4ZxtphYFs4VQSnreOrA2MBL7u5U='; " +
+        "default-src 'self'; script-src 'self' 'sha256-O1i3i81KmXoG2Op2VbIN0HPTtNW8n13R3HXSMKCtL5M='; " +
         "style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; " +
         "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'";
 
