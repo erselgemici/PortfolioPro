@@ -257,19 +257,23 @@ internal static class SeedData
     // oluşturulma tarihlerinden alındı. Aynı aydaki projelerde DisplayOrder küçük olan önce geliyor.
     private static IEnumerable<Project> Projects() =>
     [
-        P("portfolio-pro", new DateOnly(2026, 10, 1), ProjectCategory.Web, 1, featured: false,
+        P("portfolio-pro", new DateOnly(2026, 10, 1), ProjectCategory.Web, 1, featured: true,
             T("PortfolioPro: Kişisel Portfolyo", "PortfolioPro: Personal Portfolio"),
-            T("Şu an gezdiğin site. Clean Architecture, JWT + refresh token, rate limiting ve Docker ile hazırlandı.",
-              "The site you're browsing. Built with Clean Architecture, JWT + refresh tokens, rate limiting and Docker."),
+            T("Şu an gezdiğin site. .NET 9 ve Angular 20 ile geliştirip Docker ile yayına aldım.",
+              "The site you're browsing. Built with .NET 9 and Angular 20 and deployed with Docker."),
             T("## Mimari\n\n- .NET 9 Web API, Clean Architecture (Domain, Application, Infrastructure, API)\n- CQRS + MediatR, FluentValidation\n" +
-              "- EF Core + PostgreSQL, `Select` projeksiyonları\n- Angular 20: standalone component, signals\n\n" +
-              "## Güvenlik\n\n- Kısa ömürlü access token + httpOnly cookie'de refresh token (rotation ve reuse detection)\n" +
-              "- Login ve iletişim formunda rate limiting\n- Dosya yüklemede içerik (magic number) kontrolü",
+              "- EF Core + PostgreSQL\n- Angular 20: standalone component, signals\n\n" +
+              "## Güvenlik\n\n- JWT ile admin girişi, refresh token httpOnly cookie'de\n" +
+              "- Giriş ve iletişim formunda rate limiting\n\n" +
+              "## Yayın\n\n- Angular derlenip API'nin içine konuyor, tek Docker imajı\n- Render'da yayında, veritabanı Neon (PostgreSQL)\n" +
+              "- GitHub Actions ile her push'ta build ve test, push sonrası otomatik deploy",
               "## Architecture\n\n- .NET 9 Web API, Clean Architecture (Domain, Application, Infrastructure, API)\n- CQRS + MediatR, FluentValidation\n" +
-              "- EF Core + PostgreSQL with `Select` projections\n- Angular 20: standalone components, signals\n\n" +
-              "## Security\n\n- Short-lived access token + refresh token in an httpOnly cookie (rotation and reuse detection)\n" +
-              "- Rate limiting on login and the contact form\n- File upload content (magic number) validation"),
-            [".NET 9", "Angular 20", "PostgreSQL", "Docker", "JWT"], github: Repo("PortfolioPro")),
+              "- EF Core + PostgreSQL\n- Angular 20: standalone components, signals\n\n" +
+              "## Security\n\n- JWT admin login, refresh token in an httpOnly cookie\n" +
+              "- Rate limiting on login and the contact form\n\n" +
+              "## Deployment\n\n- Angular is built into the API, a single Docker image\n- Hosted on Render, database on Neon (PostgreSQL)\n" +
+              "- GitHub Actions builds and tests every push, deploys automatically after push"),
+            [".NET 9", "Angular 20", "PostgreSQL", "Docker", "JWT"], github: Repo("PortfolioPro"), live: "https://erselgemici.com"),
 
         P("devlog", new DateOnly(2026, 10, 1), ProjectCategory.Web, 2, featured: true,
             T("DevLog: Çok Yazarlı Blog Platformu", "DevLog: Multi-Author Blog Platform"),
@@ -458,7 +462,7 @@ internal static class SeedData
     private static Project P(
         string slug, DateOnly projectDate, ProjectCategory category, int order, bool featured,
         LocalizedText title, LocalizedText summary, LocalizedText content,
-        List<string> technologies, string? github = null, string? store = null, bool published = true) => new()
+        List<string> technologies, string? github = null, string? store = null, bool published = true, string? live = null) => new()
     {
         Slug = slug,
         ProjectDate = projectDate,
@@ -471,6 +475,7 @@ internal static class SeedData
         Content = content,
         Technologies = technologies,
         GithubUrl = github,
+        LiveUrl = live,
         StoreUrl = store
     };
 }
